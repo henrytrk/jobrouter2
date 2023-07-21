@@ -1,0 +1,30 @@
+name: JobRouter Git-Integration
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+env:
+  jr_process_name: Demo_PortalVCHenry2
+  jr_process_version: 1
+jobs:
+  build:
+    if: ${{ !contains(github.event.head_commit.message, 'Initial Commit from JobRouter Process') }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        operating-system: [ubuntu-latest]
+        php-versions: ['8.2']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          coverage: none
+      - name: Call JobRouter to update process assets
+        run: |
+          php ./build/push-to-jobrouter.php "${{ env.jr_process_name }}" "${{ env.jr_process_version }}" "${{ secrets.JR_URL }}" "${{ secrets.JR_USERNAME }}" "${{ secrets.JR_PASSWORD }}"
