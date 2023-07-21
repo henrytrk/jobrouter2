@@ -3,5 +3,5 @@ function fname() {
     // Put function body code here!
     // soll on load werden
 
-    //Kommentar 11:48
+    //Kommentar 12:48
 }
